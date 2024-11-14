@@ -1,3 +1,7 @@
+using VehicleService.DAL;
+using VehicleService.DAL.Interfaces;
+using VehicleService.DAL.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+builder.Services.AddControllers();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddDbContext<VehicleDbContext>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -15,5 +22,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
