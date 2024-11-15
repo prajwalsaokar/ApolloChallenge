@@ -1,1 +1,15 @@
-# 2025 Apollo Engineering Coding Exercise
+# 2024 Apollo Engineering Coding Exercise
+
+## Overview and Setup
+This project VehicleService was build using C# with the .NET 8.0 framework and tested on a Linux docker container (provided in the repository). To setup this project locally, you can use the commands `dotnet build` and `dotnet run` to run the application your localhost, assuming you have .NET 8.0 installed on your machine. Alternatively, you can use the Dockerfile in the repo and bind the container to the port of your choice to run the app. The API docs and test environment can be accessed at `<url>/swagger/index.html`
+
+## Architecture
+This system is made up of 3 layers, the application layer which contains the API controller inside VehicleService/Controllers, the data access layer which contains the database repository, Vehicle model, and validation logic, and the tests layer which contains unit and integration tests inside VehicleService.Tests. The database layer is written in EntityFramework, which uses migrations to manage the schema of the database and C#'s LINQ functionality to generate queries from functional code. If new contributors wish to add new models or database repositories for those models, they will need to make sure to create Entity Framework migrations using the `dotnet ef migrations add <MigrationName>` command. Additionally, our current database is SQLite, but we can change this to something like Postgres or SQL Server by modifying the DbContext inside the DAL. Other ways to add functionality could include adding a "Services" layer where we can add additional business-related logic that our API controller can then call.
+
+## Testing
+The VehicleService.Tests project contains 2 sets of tests. The first is VehicleRepoTests, which contain basic unit tests to validate our Vehicle model's database operations using an in-memory SQLite instance to test core CRUD functionality. The second is ServiceIntegrationTests, which contain end-to-end tests of our API routes based on the specifications provided. The integration tests spin up a test-instance of our application server and check the core functionality of all of our routes using mock Vehicle objects. These can be run using the `dotnet test` command or `dotnet test --logger "console;verbosity=detailed` for more thorough test logs.
+
+
+## Limitations and Future Considerations
+
+In the future, I would like to expand this application in a couple of ways. First, while we have containerized the application, it would be ideal to load it into a cloud system like Amazon Elastic Container Service in a production environment. We could also use GitHub Actions to setup a CI/CD pipeline to automate the build and deployment process into the cloud. Additionally, we could add more test cases for edge-case scenarios that we do not currently have specced-out. Finally, in a production environment we would likely use a client-server database like Postgres, SQL Server, or MySQL, and we would need to setup the necessary configuration both on the cloud/server-level as well as inside of our EntityFramework context configuration in order to set this up. We could also use something like AWS KMS to manage secrets (like database connection strings or other environment variables) if we wanted to connect this system to other secured APIs or infrastructure services.
