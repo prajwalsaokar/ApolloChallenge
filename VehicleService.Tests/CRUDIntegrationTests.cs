@@ -2,14 +2,19 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using VehicleService.DAL.Models;
+using VehicleService.DAL;
+using Xunit;
 
-public class CRUDIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class CRUDIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public CRUDIntegrationTests(WebApplicationFactory<Program> factory)
+    public CRUDIntegrationTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -85,5 +90,35 @@ public class CRUDIntegrationTests : IClassFixture<WebApplicationFactory<Program>
         var response = await _client.DeleteAsync("/vehicle/1HGCM82633A123456");
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+}
+
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            var descriptor = services.SingleOrDefault(
+                d => d.ServiceType == typeof(DbContextOptions<VehicleDbContext>));
+            if (descriptor != null)
+            {
+                services.Remove(descriptor);
+            }
+
+            // Add SQLite in-memory database
+            services.AddDbContext<VehicleDbContext>(options =>
+            {
+                options.UseSqlite("DataSource=:memory:");
+            });
+
+            var sp = services.BuildServiceProvider();
+            using (var scope = sp.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
+                db.Database.OpenConnection(); 
+                db.Database.EnsureCreated();  
+            }
+        });
     }
 }

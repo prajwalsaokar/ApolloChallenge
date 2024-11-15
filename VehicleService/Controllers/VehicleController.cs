@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using VehicleService.DAL.Validation;
 using VehicleService.DAL.Interfaces;
 using VehicleService.DAL.Models;
 namespace VehicleService.Controllers
 {
-    // TODO: Add Error Handling based on instructions
     // TODO: Add Unit tests and integration tests for endpoints
     
     [ApiController]
@@ -31,17 +30,25 @@ namespace VehicleService.Controllers
         {
             if (vehicle == null)
             {
-                return BadRequest("Vehicle data is invalid.");
+                return BadRequest("Vehicle data is null.");
             }
 
-            await _vehicleRepository.AddVehicle(vehicle);
-            return CreatedAtAction(nameof(GetVehicleById), new { vin = vehicle.VIN }, vehicle);
+            try
+            {
+                VehicleValidator.ValidateVehicle(vehicle);
+                await _vehicleRepository.AddVehicle(vehicle);
+                return CreatedAtAction(nameof(GetVehicleById), new { vin = vehicle.VIN }, vehicle);
+            }
+            catch (VehicleValidationException ex)
+            {
+                return UnprocessableEntity(new { errors = ex.ValidationErrors });
+            }       
         }
 
         [HttpGet("{vin}")]
         public async Task<ActionResult<Vehicle>> GetVehicleById(string vin)
         {
-            var vehicle = await _vehicleRepository.GetVehicleById(vin);
+            Vehicle vehicle = await _vehicleRepository.GetVehicleById(vin);
             if (vehicle == null)
             {
                 return NotFound();
@@ -58,8 +65,17 @@ namespace VehicleService.Controllers
                 return BadRequest("Vehicle data is invalid or VIN mismatch.");
             }
 
-            await _vehicleRepository.UpdateVehicle(vin, updatedVehicle);
-            return Ok("Vehicle updated successfully.");
+            try
+            {
+                VehicleValidator.ValidateVehicle(updatedVehicle);
+                await _vehicleRepository.UpdateVehicle(vin, updatedVehicle);
+
+                return Ok("Vehicle updated successfully.");
+            }
+            catch (VehicleValidationException ex)
+            {
+                return UnprocessableEntity(new { errors = ex.ValidationErrors });
+            }
         }
 
         [HttpDelete("{vin}")]
