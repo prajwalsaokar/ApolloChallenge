@@ -25,7 +25,7 @@ namespace VehicleService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Vehicle>> CreateVehicle([FromBody] Vehicle vehicle)
+        public async Task<ActionResult<Vehicle>> CreateVehicle([FromBody] Vehicle? vehicle)
         {
             if (vehicle == null)
             {
@@ -49,7 +49,7 @@ namespace VehicleService.Controllers
         }
 
         [HttpPut("{vin}")]
-        public async Task<IActionResult> UpdateVehicle(string vin, [FromBody] Vehicle updatedVehicle)
+        public async Task<IActionResult> UpdateVehicle(string vin, [FromBody] Vehicle? updatedVehicle)
         {
             if (updatedVehicle == null || vin != updatedVehicle.VIN)
             {

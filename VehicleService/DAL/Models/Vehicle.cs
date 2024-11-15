@@ -7,7 +7,7 @@ namespace VehicleService.DAL.Models
         [Key]
         [Required]
         [StringLength(17, MinimumLength = 17, ErrorMessage = "VIN must be 17 characters long.")]
-        public string VIN { get; set; } // Unique constraint, case-insensitive
+        public string VIN { get; set; } 
 
         [Required] [StringLength(100)] public string ManufacturerName { get; set; }
 
