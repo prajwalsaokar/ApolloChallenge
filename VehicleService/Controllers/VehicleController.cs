@@ -70,7 +70,7 @@ namespace VehicleService.Controllers
                 VehicleValidator.ValidateVehicle(updatedVehicle);
                 await _vehicleRepository.UpdateVehicle(vin, updatedVehicle);
 
-                return Ok("Vehicle updated successfully.");
+                return Ok(updatedVehicle);
             }
             catch (VehicleValidationException ex)
             {

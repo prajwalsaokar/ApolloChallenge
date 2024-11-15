@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using VehicleService.DAL;
 using VehicleService.DAL.Interfaces;
 using VehicleService.DAL.Repositories;
@@ -11,6 +12,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddDbContext<VehicleDbContext>();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 
 // configure app from services
 var app = builder.Build();
