@@ -6,7 +6,7 @@ namespace VehicleService.DAL.Models
     {
         [Key]
         [Required]
-        public string VIN { get; set; } 
+        public string VIN { get; set; }
 
         [Required] 
         public string ManufacturerName { get; set; }

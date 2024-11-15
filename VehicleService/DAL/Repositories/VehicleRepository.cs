@@ -19,17 +19,20 @@ namespace VehicleService.DAL.Repositories
 
         public async Task<Vehicle> GetVehicleById(string vin)
         {
+            vin = vin.ToUpper();
             return await _context.Vehicles.FirstOrDefaultAsync(v => v.VIN == vin);
         }
 
         public async Task AddVehicle(Vehicle vehicle)
         {
+            vehicle.VIN = vehicle.VIN.ToUpper();
             await _context.Vehicles.AddAsync(vehicle);
             await _context.SaveChangesAsync();
         }
         
         public async Task DeleteVehicle(string vin)
         {
+            vin = vin.ToUpper();
             var vehicleToDelete = await _context.Vehicles.FirstOrDefaultAsync(v => v.VIN == vin);
             if (vehicleToDelete != null)
             {
@@ -39,6 +42,7 @@ namespace VehicleService.DAL.Repositories
         }
         public async Task UpdateVehicle(string vin, Vehicle updatedVehicle)
         {
+            vin = vin.ToUpper();
             var existingVehicle = await _context.Vehicles.FindAsync(vin);
             if (existingVehicle != null)
             {
