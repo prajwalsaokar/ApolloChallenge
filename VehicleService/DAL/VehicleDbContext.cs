@@ -9,9 +9,10 @@ namespace VehicleService.DAL
 
         public string DbPath { get; }
 
-        public VehicleDbContext()
+
+        public VehicleDbContext(DbContextOptions<VehicleDbContext> options) : base(options)
         {
-            var basePath = AppContext.BaseDirectory;
+            var basePath = Directory.GetCurrentDirectory(); 
             var dataFolder = Path.Combine(basePath, "Database");
             if (!Directory.Exists(dataFolder))
             {
@@ -22,7 +23,12 @@ namespace VehicleService.DAL
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite($"Data Source={DbPath}");
+        {
+            if (!options.IsConfigured)
+            {
+                options.UseSqlite($"Data Source={DbPath}");
+            }
+        }
     }
 }
     

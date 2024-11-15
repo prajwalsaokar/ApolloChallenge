@@ -21,3 +21,8 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "VehicleService.dll"]
+
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
+ENTRYPOINT ["sh", "-c", "dotnet ef database update && dotnet VehicleService.dll"]
+
