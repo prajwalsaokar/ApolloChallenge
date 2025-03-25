@@ -84,5 +84,23 @@ namespace VehicleService.Controllers
             await _vehicleRepository.DeleteVehicle(vin);
             return NoContent();
         }
+
+        [HttpPost("sell/{vin}")]
+        public async Task<IActionResult> SellVehicle(string vin)
+        {
+            var soldVehicle = await _vehicleRepository.SellVehicle(vin);
+            if (soldVehicle == null)
+            {
+                return NotFound($"Vehicle with VIN {vin} not found.");
+            }
+            return Ok(soldVehicle);
+        }
+
+        [HttpGet("sold")]
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetSoldVehicles()
+        {
+            var soldVehicles = await _vehicleRepository.GetAllSoldVehicles();
+            return Ok(soldVehicles);
+        }
     }
 }

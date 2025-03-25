@@ -49,7 +49,27 @@ namespace VehicleService.DAL.Repositories
                 _context.Entry(existingVehicle).CurrentValues.SetValues(updatedVehicle);
                 await _context.SaveChangesAsync();
             }
+        }  
+
+        public async Task<Vehicle> SellVehicle(string vin)
+        {
+            vin = vin.ToUpper();
+            var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VIN == vin);
+            if (vehicle == null)
+            {
+                return null;
+            }
+
+            _context.Vehicles.Remove(vehicle);
+            await _context.SoldVehicles.AddAsync(vehicle);
+            await _context.SaveChangesAsync();
+            
+            return vehicle;
         }
-    
+
+        public async Task<IEnumerable<Vehicle>> GetAllSoldVehicles()
+        {
+            return await _context.SoldVehicles.ToListAsync();
+        }
     }
 }

@@ -6,9 +6,9 @@ namespace VehicleService.DAL
     public class VehicleDbContext: DbContext
     {
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Vehicle> SoldVehicles { get; set; }
 
         public string DbPath { get; }
-
 
         public VehicleDbContext(DbContextOptions<VehicleDbContext> options) : base(options)
         {

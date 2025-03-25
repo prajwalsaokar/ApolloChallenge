@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VehicleService.DAL.Models
 {
-    public class Vehicle
+    public class SoldVehicle
     {
         [Key]
         [Required]
@@ -29,11 +29,6 @@ namespace VehicleService.DAL.Models
         
         [StringLength(50)]
         public string Color { get; set; }
-
-  
-        
-        
-        
 
     }
 }

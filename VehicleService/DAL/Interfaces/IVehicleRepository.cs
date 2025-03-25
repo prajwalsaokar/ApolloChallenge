@@ -9,7 +9,8 @@ namespace VehicleService.DAL.Interfaces
         Task AddVehicle(Vehicle vehicle);
         Task UpdateVehicle(string vin, Vehicle updatedVehicle);
         Task DeleteVehicle(string vin);
-
+        Task<Vehicle> SellVehicle(string vin);
+        Task<IEnumerable<Vehicle>> GetAllSoldVehicles();
     }
 
 }
